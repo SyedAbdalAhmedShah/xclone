@@ -1,0 +1,10 @@
+class: User
+fields:
+  email: String
+  username: String
+  handle: String
+  bio: String
+  profileImageUrl: String
+  profileBannerUrl: String
+  followerCount: int
+  followingCount: int

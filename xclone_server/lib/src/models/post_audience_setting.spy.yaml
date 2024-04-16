@@ -1,0 +1,6 @@
+enum: PostAudienceSettings
+values:
+  - everyone
+  - circle
+
+
