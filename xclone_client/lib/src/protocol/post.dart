@@ -13,6 +13,7 @@ import 'protocol.dart' as _i2;
 
 abstract class Post extends _i1.SerializableEntity {
   Post._({
+    this.id,
     required this.caption,
     required this.imageUrl,
     required this.type,
@@ -24,6 +25,7 @@ abstract class Post extends _i1.SerializableEntity {
   });
 
   factory Post({
+    int? id,
     required String caption,
     required String imageUrl,
     required _i2.PostType type,
@@ -39,6 +41,7 @@ abstract class Post extends _i1.SerializableEntity {
     _i1.SerializationManager serializationManager,
   ) {
     return Post(
+      id: serializationManager.deserialize<int?>(jsonSerialization['id']),
       caption: serializationManager
           .deserialize<String>(jsonSerialization['caption']),
       imageUrl: serializationManager
@@ -58,6 +61,11 @@ abstract class Post extends _i1.SerializableEntity {
     );
   }
 
+  /// The database id, set if the object has been inserted into the
+  /// database or if it has been fetched from the database. Otherwise,
+  /// the id will be null.
+  int? id;
+
   String caption;
 
   String imageUrl;
@@ -75,6 +83,7 @@ abstract class Post extends _i1.SerializableEntity {
   String profileImageUrl;
 
   Post copyWith({
+    int? id,
     String? caption,
     String? imageUrl,
     _i2.PostType? type,
@@ -87,6 +96,7 @@ abstract class Post extends _i1.SerializableEntity {
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       'caption': caption,
       'imageUrl': imageUrl,
       'type': type.toJson(),
@@ -99,8 +109,11 @@ abstract class Post extends _i1.SerializableEntity {
   }
 }
 
+class _Undefined {}
+
 class _PostImpl extends Post {
   _PostImpl({
+    int? id,
     required String caption,
     required String imageUrl,
     required _i2.PostType type,
@@ -110,6 +123,7 @@ class _PostImpl extends Post {
     required String username,
     required String profileImageUrl,
   }) : super._(
+          id: id,
           caption: caption,
           imageUrl: imageUrl,
           type: type,
@@ -122,6 +136,7 @@ class _PostImpl extends Post {
 
   @override
   Post copyWith({
+    Object? id = _Undefined,
     String? caption,
     String? imageUrl,
     _i2.PostType? type,
@@ -132,6 +147,7 @@ class _PostImpl extends Post {
     String? profileImageUrl,
   }) {
     return Post(
+      id: id is int? ? id : this.id,
       caption: caption ?? this.caption,
       imageUrl: imageUrl ?? this.imageUrl,
       type: type ?? this.type,

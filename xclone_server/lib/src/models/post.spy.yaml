@@ -1,4 +1,5 @@
 class: Post
+table: posts
 fields:
   caption: String
   imageUrl: String
