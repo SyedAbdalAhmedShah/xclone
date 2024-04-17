@@ -1,10 +1,17 @@
 part of 'feed_bloc.dart';
 
-sealed class FeedState extends Equatable {
-  const FeedState();
-}
+enum FeedStatus { initial, loading, loaded, error }
 
-final class FeedInitial extends FeedState {
+class FeedState extends Equatable {
+  final FeedStatus status;
+  final List<Post> posts;
+  const FeedState({this.status = FeedStatus.initial, this.posts = const []});
+
+  FeedState copyWith({FeedStatus? status, List<Post>? posts}) {
+    return FeedState(posts: posts ?? this.posts, status: status ?? this.status);
+  }
+
   @override
-  List<Object> get props => [];
+  // TODO: implement props
+  List<Object?> get props => [status, posts];
 }
