@@ -21,9 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Serverpod Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(useMaterial3: true),
       home: const MyHomePage(title: 'Serverpod Example'),
     );
   }
@@ -39,28 +37,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  // These fields hold the last result or error message that we've received from
-  // the server or null if no result exists yet.
-  String? _resultMessage;
-  String? _errorMessage;
+  List<Post>? _posts;
+  Exception? _connectionException;
 
-  final _textEditingController = TextEditingController();
+  void _connectionFailed(dynamic exception) {
+    setState(() {
+      _posts = null;
+      _connectionException = exception;
+    });
+  }
 
-  // Calls the `hello` method of the `example` endpoint. Will set either the
-  // `_resultMessage` or `_errorMessage` field, depending on if the call
-  // is successful.
-  void _callHello() async {
+  Future<void> _loadPosts() async {
     try {
-      final result = await client.example.hello(_textEditingController.text);
+      final posts = await client.post.getAllPost();
       setState(() {
-        _errorMessage = null;
-        _resultMessage = result;
+        _posts = posts;
       });
     } catch (e) {
-      setState(() {
-        _errorMessage = '$e';
-      });
+      _connectionFailed(e);
     }
+  }
+
+  @override
+  void initState() {
+    _loadPosts();
+    super.initState();
   }
 
   @override
@@ -69,69 +70,14 @@ class MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: TextField(
-                controller: _textEditingController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your name',
-                ),
+      body: _posts != null
+          ? ListView.builder(
+              itemCount: _posts!.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text(_posts![index].caption),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: ElevatedButton(
-                onPressed: _callHello,
-                child: const Text('Send to Server'),
-              ),
-            ),
-            _ResultDisplay(
-              resultMessage: _resultMessage,
-              errorMessage: _errorMessage,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// _ResultDisplays shows the result of the call. Either the returned result from
-// the `example.hello` endpoint method or an error message.
-class _ResultDisplay extends StatelessWidget {
-  final String? resultMessage;
-  final String? errorMessage;
-
-  const _ResultDisplay({
-    this.resultMessage,
-    this.errorMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String text;
-    Color backgroundColor;
-    if (errorMessage != null) {
-      backgroundColor = Colors.red[300]!;
-      text = errorMessage!;
-    } else if (resultMessage != null) {
-      backgroundColor = Colors.green[300]!;
-      text = resultMessage!;
-    } else {
-      backgroundColor = Colors.grey[300]!;
-      text = 'No server response yet.';
-    }
-
-    return Container(
-      height: 50,
-      color: backgroundColor,
-      child: Center(
-        child: Text(text),
-      ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 }
