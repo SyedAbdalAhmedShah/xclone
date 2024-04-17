@@ -16,6 +16,7 @@ import 'post_audience_setting.dart' as _i4;
 import 'post_reply_setting.dart' as _i5;
 import 'post_type.dart' as _i6;
 import 'user.dart' as _i7;
+import 'package:xclone_client/src/protocol/post.dart' as _i8;
 export 'example.dart';
 export 'post.dart';
 export 'post_audience_setting.dart';
@@ -78,6 +79,10 @@ class Protocol extends _i1.SerializationManager {
     }
     if (t == _i1.getType<_i7.User?>()) {
       return (data != null ? _i7.User.fromJson(data, this) : null) as T;
+    }
+    if (t == List<_i8.Post>) {
+      return (data as List).map((e) => deserialize<_i8.Post>(e)).toList()
+          as dynamic;
     }
     return super.deserialize<T>(data, t);
   }

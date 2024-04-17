@@ -10,19 +10,33 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'protocol.dart' as _i3;
+import 'package:xclone_client/src/protocol/post.dart' as _i3;
+import 'protocol.dart' as _i4;
 
 /// {@category Endpoint}
-class EndpointExample extends _i1.EndpointRef {
-  EndpointExample(_i1.EndpointCaller caller) : super(caller);
+class EndpointPost extends _i1.EndpointRef {
+  EndpointPost(_i1.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'example';
+  String get name => 'post';
 
-  _i2.Future<String> hello(String name) => caller.callServerEndpoint<String>(
-        'example',
-        'hello',
-        {'name': name},
+  _i2.Future<void> createPost(_i3.Post post) => caller.callServerEndpoint<void>(
+        'post',
+        'createPost',
+        {'post': post},
+      );
+
+  _i2.Future<void> deletePost(_i3.Post post) => caller.callServerEndpoint<void>(
+        'post',
+        'deletePost',
+        {'post': post},
+      );
+
+  _i2.Future<List<_i3.Post>> getAllPost() =>
+      caller.callServerEndpoint<List<_i3.Post>>(
+        'post',
+        'getAllPost',
+        {},
       );
 }
 
@@ -35,19 +49,19 @@ class Client extends _i1.ServerpodClient {
     Duration? connectionTimeout,
   }) : super(
           host,
-          _i3.Protocol(),
+          _i4.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
           connectionTimeout: connectionTimeout,
         ) {
-    example = EndpointExample(this);
+    post = EndpointPost(this);
   }
 
-  late final EndpointExample example;
+  late final EndpointPost post;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'example': example};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {'post': post};
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};

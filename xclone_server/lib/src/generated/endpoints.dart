@@ -10,28 +10,29 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/post_endpoint.dart' as _i2;
+import 'package:xclone_server/src/generated/post.dart' as _i3;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'example': _i2.ExampleEndpoint()
+      'post': _i2.PostEndpoint()
         ..initialize(
           server,
-          'example',
+          'post',
           null,
         )
     };
-    connectors['example'] = _i1.EndpointConnector(
-      name: 'example',
-      endpoint: endpoints['example']!,
+    connectors['post'] = _i1.EndpointConnector(
+      name: 'post',
+      endpoint: endpoints['post']!,
       methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
+        'createPost': _i1.MethodConnector(
+          name: 'createPost',
           params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
+            'post': _i1.ParameterDescription(
+              name: 'post',
+              type: _i1.getType<_i3.Post>(),
               nullable: false,
             )
           },
@@ -39,11 +40,38 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['example'] as _i2.ExampleEndpoint).hello(
+              (endpoints['post'] as _i2.PostEndpoint).createPost(
             session,
-            params['name'],
+            params['post'],
           ),
-        )
+        ),
+        'deletePost': _i1.MethodConnector(
+          name: 'deletePost',
+          params: {
+            'post': _i1.ParameterDescription(
+              name: 'post',
+              type: _i1.getType<_i3.Post>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['post'] as _i2.PostEndpoint).deletePost(
+            session,
+            params['post'],
+          ),
+        ),
+        'getAllPost': _i1.MethodConnector(
+          name: 'getAllPost',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['post'] as _i2.PostEndpoint).getAllPost(session),
+        ),
       },
     );
   }
