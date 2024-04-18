@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => FeedBloc(postRepository: postRepository)),
+              create: (context) => FeedBloc(postRepository: postRepository)..add(const FeedLoadEvent())),
         ],
         child: MaterialApp(
           title: 'X Clone',

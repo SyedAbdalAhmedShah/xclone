@@ -49,36 +49,22 @@ class FeedScreen extends StatelessWidget {
   }
 }
 
-class ForYouPosts extends StatefulWidget {
-  const ForYouPosts({
-    super.key,
-  });
-
-  @override
-  State<ForYouPosts> createState() => _ForYouPostsState();
-}
-
-class _ForYouPostsState extends State<ForYouPosts> {
-  late FeedBloc _feedBloc;
-
-  @override
-  void initState() {
-    _feedBloc = context.read<FeedBloc>();
-    _feedBloc.add(const FeedLoadEvent());
-    super.initState();
-  }
+class ForYouPosts extends StatelessWidget {
+  const ForYouPosts({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedBloc, FeedState>(
       builder: (BuildContext context, FeedState state) {
-        if (state.status == FeedStatus.initial || state.status == FeedStatus.loading) {
+        if (state.status == FeedStatus.initial ||
+            state.status == FeedStatus.loading) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
         } else if (state.status == FeedStatus.loaded) {
           final allPosts = state.posts;
           return ListView.separated(
+            addAutomaticKeepAlives: true,
             itemCount: allPosts.length,
             itemBuilder: (context, index) => PostWidget(
               post: allPosts[index],
@@ -95,10 +81,16 @@ class _ForYouPostsState extends State<ForYouPosts> {
   }
 }
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   final Post post;
   const PostWidget({super.key, required this.post});
 
+  @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -107,7 +99,8 @@ class PostWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(post.profileImageUrl),
+            backgroundImage:
+                CachedNetworkImageProvider(widget.post.profileImageUrl),
           ),
           const SizedBox(
             width: 10,
@@ -119,7 +112,7 @@ class PostWidget extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    post.username,
+                    widget.post.username,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
@@ -142,9 +135,9 @@ class PostWidget extends StatelessWidget {
                   const Icon(Icons.more_horiz)
                 ],
               ),
-              Text(post.caption),
+              Text(widget.post.caption),
               CacheWebImages(
-                imageUrl: post.imageUrl,
+                imageUrl: widget.post.imageUrl,
               ),
               const SizedBox(
                 height: 12,
@@ -218,4 +211,8 @@ class PostWidget extends StatelessWidget {
       ),
     );
   }
+
+  @override
+
+  bool get wantKeepAlive => true;
 }
