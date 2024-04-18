@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xclone_client/xclone_client.dart';
 import 'package:xclone_flutter/blocs/feed_bloc/feed_bloc.dart';
@@ -93,126 +94,113 @@ class _PostWidgetState extends State<PostWidget>
     with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          CircleAvatar(
-            backgroundImage:
-                CachedNetworkImageProvider(widget.post.profileImageUrl),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Column(
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
             children: [
-              Row(
-                children: [
-                  Text(
-                    widget.post.username,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  const Icon(
-                    Icons.verified,
-                    size: 12,
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    "@handle - Sep 28",
-                    style: TextStyle(color: Colors.grey.shade700),
-                  ),
-                  const SizedBox(
-                    width: 150,
-                  ),
-                  const Icon(Icons.more_horiz)
-                ],
-              ),
-              Text(widget.post.caption),
-              CacheWebImages(
-                imageUrl: widget.post.imageUrl,
+              CircleAvatar(
+                backgroundImage:
+                    CachedNetworkImageProvider(widget.post.profileImageUrl),
               ),
               const SizedBox(
-                height: 12,
+                width: 10,
               ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.comment),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text("6")
-                    ],
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.repeat),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text("6")
-                    ],
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.favorite_border),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text("6")
-                    ],
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.bar_chart),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text("6")
-                    ],
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.share),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text("6")
-                    ],
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.post.username,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        const Icon(
+                          Icons.verified,
+                          size: 12,
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          "@handle - Sep 28",
+                          style: TextStyle(color: Colors.grey.shade700),
+                        ),
+                        const SizedBox(
+                          width: 150,
+                        ),
+                        const Icon(Icons.more_horiz)
+                      ],
+                    ),
+                    Text(widget.post.caption),
+                    CacheWebImages(
+                      imageUrl: widget.post.imageUrl,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.comment),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text("6")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.repeat),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(widget.post.reply.toString())
+                          ],
+                        ),
+                        const Row(
+                          children: [
+                            Icon(Icons.favorite_border),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text("6")
+                          ],
+                        ),
+                        const Row(
+                          children: [
+                            Icon(Icons.bar_chart),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text("6")
+                          ],
+                        ),
+                        Icon(Icons.adaptive.share),
+                      ],
+                    )
+                  ],
+                ),
               )
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
   @override
-
   bool get wantKeepAlive => true;
 }
