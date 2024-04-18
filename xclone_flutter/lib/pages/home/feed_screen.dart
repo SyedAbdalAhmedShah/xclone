@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:xclone_client/xclone_client.dart';
+import 'package:xclone_flutter/blocs/feed_bloc/feed_bloc.dart';
 import 'package:xclone_flutter/constants/app_assets.dart';
 import 'package:xclone_flutter/constants/app_strings.dart';
 
@@ -49,30 +52,36 @@ class ForYouPosts extends StatelessWidget {
     super.key,
   });
 
-  final List<String> allImagePath = [
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://plus.unsplash.com/premium_photo-1688891564708-9b2247085923?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1619895862022-09114b41f16f?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  ];
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: allImagePath.length,
-      itemBuilder: (context, index) => PostWidget(
-        imagePath: allImagePath[index],
-      ),
-      separatorBuilder: (context, index) => const Divider(),
+    return BlocBuilder<FeedBloc, FeedState>(
+      builder: (BuildContext context, FeedState state) {
+        if (state.status == FeedStatus.initial || state.status == FeedStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        } else if (state.status == FeedStatus.loaded) {
+          final allPosts = state.posts;
+          return ListView.separated(
+            itemCount: allPosts.length,
+            itemBuilder: (context, index) => PostWidget(
+              post: allPosts[index],
+            ),
+            separatorBuilder: (context, index) => const Divider(),
+          );
+        } else {
+          return const Center(
+            child: Text("SOMETHING WENT WRONG...."),
+          );
+        }
+      },
     );
   }
 }
 
 class PostWidget extends StatelessWidget {
-  final String imagePath;
-  const PostWidget({super.key, required this.imagePath});
+  final Post post;
+  const PostWidget({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +90,9 @@ class PostWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(),
+          CircleAvatar(
+            backgroundImage: NetworkImage(post.profileImageUrl),
+          ),
           const SizedBox(
             width: 10,
           ),
@@ -91,9 +102,9 @@ class PostWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text(
-                    "User1",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    post.username,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     width: 4,
@@ -115,7 +126,7 @@ class PostWidget extends StatelessWidget {
                   const Icon(Icons.more_horiz)
                 ],
               ),
-              const Text("New uploaded caption 1 !!!"),
+              Text(post.caption),
               Container(
                 margin: const EdgeInsets.only(top: 10),
                 decoration:
@@ -126,7 +137,7 @@ class PostWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: NetworkImage(imagePath),
+                        image: NetworkImage(post.imageUrl),
                       )),
                   height: 350,
                   width: MediaQuery.sizeOf(context).width * 0.78,
