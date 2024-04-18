@@ -36,7 +36,9 @@ class PostActionSheet extends StatelessWidget {
         OutlinedButton(
             style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(56.0)),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             child: const Text(AppStrings.cancel))
       ],
     );

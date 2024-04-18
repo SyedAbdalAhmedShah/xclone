@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:xclone_client/xclone_client.dart';
-import 'package:xclone_flutter/constants/app_strings.dart';
 import 'package:xclone_flutter/widgets/cache_image.dart';
 import 'package:xclone_flutter/widgets/post_action_sheet.dart';
+import 'package:xclone_flutter/widgets/post_stats.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -83,49 +83,7 @@ class _PostWidgetState extends State<PostWidget>
                     const SizedBox(
                       height: 12,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Row(
-                          children: [
-                            Icon(Icons.comment),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text("6")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.repeat),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(widget.post.reply.toString())
-                          ],
-                        ),
-                        const Row(
-                          children: [
-                            Icon(Icons.favorite_border),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text("6")
-                          ],
-                        ),
-                        const Row(
-                          children: [
-                            Icon(Icons.bar_chart),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text("6")
-                          ],
-                        ),
-                        Icon(Icons.adaptive.share),
-                      ],
-                    )
+                    PostStats(post: widget.post)
                   ],
                 ),
               )
