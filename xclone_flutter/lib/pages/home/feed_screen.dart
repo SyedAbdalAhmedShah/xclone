@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:xclone_client/xclone_client.dart';
 import 'package:xclone_flutter/blocs/feed_bloc/feed_bloc.dart';
 import 'package:xclone_flutter/constants/app_assets.dart';
 import 'package:xclone_flutter/constants/app_strings.dart';
+import 'package:xclone_flutter/widgets/cache_image.dart';
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
@@ -33,11 +35,11 @@ class FeedScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
+        body: const TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             ForYouPosts(),
-            const Center(
+            Center(
               child: Text(AppStrings.following),
             )
           ],
@@ -47,10 +49,24 @@ class FeedScreen extends StatelessWidget {
   }
 }
 
-class ForYouPosts extends StatelessWidget {
-  ForYouPosts({
+class ForYouPosts extends StatefulWidget {
+  const ForYouPosts({
     super.key,
   });
+
+  @override
+  State<ForYouPosts> createState() => _ForYouPostsState();
+}
+
+class _ForYouPostsState extends State<ForYouPosts> {
+  late FeedBloc _feedBloc;
+
+  @override
+  void initState() {
+    _feedBloc = context.read<FeedBloc>();
+    _feedBloc.add(const FeedLoadEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +107,7 @@ class PostWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(post.profileImageUrl),
+            backgroundImage: CachedNetworkImageProvider(post.profileImageUrl),
           ),
           const SizedBox(
             width: 10,
@@ -127,21 +143,8 @@ class PostWidget extends StatelessWidget {
                 ],
               ),
               Text(post.caption),
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.grey)),
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(post.imageUrl),
-                      )),
-                  height: 350,
-                  width: MediaQuery.sizeOf(context).width * 0.78,
-                ),
+              CacheWebImages(
+                imageUrl: post.imageUrl,
               ),
               const SizedBox(
                 height: 12,
