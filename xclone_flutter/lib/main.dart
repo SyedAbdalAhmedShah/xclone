@@ -9,14 +9,15 @@ import 'package:xclone_flutter/pages/home/feed_screen.dart';
 import 'package:xclone_flutter/repositories/post_repository.dart';
 
 late Client client;
-late SessionManager  sessionManager;
-void main()  async{
-   WidgetsFlutterBinding.ensureInitialized();
-client = Client('http://$localhost:8080/',
-    authenticationKeyManager: FlutterAuthenticationKeyManager())
-  ..connectivityMonitor = FlutterConnectivityMonitor();
- 
-// sessionManager = SessionManager(caller: client.modules.auth);
+late SessionManager sessionManager;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  client = Client('http://$localhost:8080/',
+      authenticationKeyManager: FlutterAuthenticationKeyManager())
+    ..connectivityMonitor = FlutterConnectivityMonitor();
+
+  sessionManager = SessionManager(caller: client.modules.auth);
+  await sessionManager.initialize();
 
   runApp(const MyApp());
 }
@@ -36,8 +37,11 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => FeedBloc(postRepository: postRepository)
-                ..add(const FeedLoadEvent())),
+            create: (context) => FeedBloc(postRepository: postRepository)
+              ..add(
+                const FeedLoadEvent(),
+              ),
+          ),
         ],
         child: MaterialApp(
           title: 'X Clone',
@@ -45,7 +49,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/feed',
           routes: {
             '/feed': (context) => const FeedScreen(),
-            'createAccount': (context) => const CreateAccountPage()
+            'createAccount': (context) => const CreateAccountPage(),
           },
         ),
       ),
