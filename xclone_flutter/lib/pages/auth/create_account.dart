@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:xclone_flutter/constants/app_assets.dart';
 import 'package:xclone_flutter/constants/app_strings.dart';
+import 'package:xclone_flutter/main.dart';
+
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
 
@@ -38,7 +41,11 @@ class CreateAccountPage extends StatelessWidget {
           ),
           TextFormField(
             decoration: const InputDecoration(hintText: AppStrings.dob),
-          )
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SignInWithEmailButton(caller: client.modules.auth),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
