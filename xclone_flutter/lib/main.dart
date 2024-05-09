@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'X Clone',
           theme: ThemeData.dark(useMaterial3: true),
-          initialRoute: '/createAccount',
+          initialRoute: '/feed',
           routes: {
             '/feed': (context) => const FeedScreen(),
             '/createAccount': (context) => const CreateAccountPage(),
